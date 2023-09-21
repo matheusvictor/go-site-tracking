@@ -10,6 +10,27 @@ import (
 const quantidadeMonitoramento = 2
 const delay = 60
 
+func main() {
+	exibirIntroducao()
+
+	for {
+		exibirMenu()
+		opcao := lerOpcao()
+		switch opcao {
+		case 1:
+			iniciarMonitoramento()
+		case 2:
+			fmt.Println("Exibindo logs...")
+		case 0:
+			fmt.Println("Saindo do programa")
+			os.Exit(0)
+		default:
+			fmt.Println("Opção inválida! Encerrando o programa.")
+			os.Exit(-1)
+		}
+	}
+}
+
 func exibirIntroducao() {
 	var nome string = "Matheus"
 	sobrenome := "Santana" // forma "abreviada" de declarar uma variável com inferência de tipo
@@ -60,25 +81,4 @@ func iniciarMonitoramento() {
 		time.Sleep(delay * time.Second)
 	}
 
-}
-
-func main() {
-	exibirIntroducao()
-
-	for {
-		exibirMenu()
-		opcao := lerOpcao()
-		switch opcao {
-		case 1:
-			iniciarMonitoramento()
-		case 2:
-			fmt.Println("Exibindo logs...")
-		case 0:
-			fmt.Println("Saindo do programa")
-			os.Exit(0)
-		default:
-			fmt.Println("Opção inválida! Encerrando o programa.")
-			os.Exit(-1)
-		}
-	}
 }
