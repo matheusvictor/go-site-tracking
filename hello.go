@@ -29,27 +29,46 @@ func exibirMenu() {
 
 func iniciarMonitoramento() {
 	fmt.Println("Monitorando...")
-	site := "https://www.alura.com.br"
+
+	// Slices são como arrays dinâmicos
+	sites := []string{
+		"https://www.alura.com.br",
+		"https://www.google.com.br",
+		"https://random-status-code.herokuapp.com/"}
+
+	//  index, site := range sites
+	for index := 0; index < len(sites); index++ {
+		testarSite(sites[index])
+	}
+}
+
+func testarSite(site string) {
 	response, _ := http.Get(site)
-	fmt.Println(response)
+
+	if response.StatusCode == 200 {
+		fmt.Println("Site", site, "foi acessado com sucesso!")
+	} else {
+		fmt.Println("Site", site, "está com problemas! Status Code:", response.StatusCode)
+	}
 }
 
 func main() {
 	exibirIntroducao()
-	exibirMenu()
-	opcao := lerOpcao()
 
-	switch opcao {
-	case 1:
-		iniciarMonitoramento()
-	case 2:
-		fmt.Println("Exibindo logs...")
-	case 0:
-		fmt.Println("Saindo do programa")
-		os.Exit(0)
-	default:
-		fmt.Println("Opção inválida! Encerrando o programa.")
-		os.Exit(-1)
+	for {
+		exibirMenu()
+		opcao := lerOpcao()
+		switch opcao {
+		case 1:
+			iniciarMonitoramento()
+		case 2:
+			fmt.Println("Exibindo logs...")
+		case 0:
+			fmt.Println("Saindo do programa")
+			os.Exit(0)
+		default:
+			fmt.Println("Opção inválida! Encerrando o programa.")
+			os.Exit(-1)
+		}
 	}
-
 }
