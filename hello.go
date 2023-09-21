@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -48,12 +51,17 @@ func lerOpcao() int {
 
 func exibirMenu() {
 	fmt.Println("1 - Iniciar monitoramento")
-	fmt.Println("2 - Exibir logs")
+	fmt.Println("2 - Cadastrar novo site para monitoramento")
+	fmt.Println("3 - Exibir logs")
 	fmt.Println("0 - Sair do programa")
 }
 
 func testarSite(site string) {
-	response, _ := http.Get(site)
+	response, erro := http.Get(site)
+
+	if erro != nil {
+		fmt.Println("Ocorreu um erro:", erro)
+	}
 
 	if response.StatusCode == 200 {
 		fmt.Println("Site", site, "foi acessado com sucesso!")
@@ -66,10 +74,7 @@ func iniciarMonitoramento() {
 	fmt.Println("Monitorando...")
 
 	// Slices são como arrays dinâmicos
-	sites := []string{
-		"https://www.alura.com.br",
-		"https://www.google.com.br",
-		"https://random-status-code.herokuapp.com/"}
+	sites := lerSitesDoArquivo()
 
 	for index := 1; index <= quantidadeMonitoramento; index++ {
 		fmt.Println("Executando", index, "ª rotina de monitoramento...")
@@ -80,5 +85,43 @@ func iniciarMonitoramento() {
 		fmt.Println("Aguardando para testar novamente...")
 		time.Sleep(delay * time.Second)
 	}
+}
 
+func abrirArquivo() *os.File {
+
+	// arquivo, erro := ioutil.ReadFile("sites.txt")
+	arquivo, erro := os.Open("sites.txt")
+
+	if erro != nil {
+		fmt.Println("Ocorreu um erro:", erro)
+	}
+
+	return arquivo
+}
+
+func criarArquivo() {
+	os.Create("teste.txt")
+}
+
+func lerSitesDoArquivo() []string {
+
+	var sites []string
+	arquivo := abrirArquivo()
+
+	leitor := bufio.NewReader(arquivo)
+	for {
+		linha, erro := leitor.ReadString('\n') // aspas simples para definir o byte
+		linha = strings.TrimSpace(linha)
+		fmt.Println(linha)
+
+		sites = append(sites, linha)
+
+		if erro == io.EOF { // identifica final do arquivo
+			break
+		}
+	}
+
+	arquivo.Close()
+
+	return sites
 }
