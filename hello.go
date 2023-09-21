@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 func exibirIntroducao() {
 	var nome string = "Matheus"
@@ -35,8 +38,10 @@ func main() {
 		fmt.Println("Exibindo logs...")
 	case 0:
 		fmt.Println("Saindo do programa")
+		os.Exit(0)
 	default:
-		fmt.Println("Opção inválida!")
+		fmt.Println("Opção inválida! Encerrando o programa.")
+		os.Exit(-1)
 	}
 
 }
