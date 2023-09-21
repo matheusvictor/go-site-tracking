@@ -22,4 +22,15 @@ func main() {
 	// fmt.Println("Endereço da variável opcao: ", &opcao)
 	fmt.Println("A opção escolhida foi", opcao)
 
+	switch opcao {
+	case 1:
+		fmt.Println("Monitorando...")
+	case 2:
+		fmt.Println("Exibindo logs...")
+	case 0:
+		fmt.Println("Saindo do programa")
+	default:
+		fmt.Println("Opção inválida!")
+	}
+
 }
