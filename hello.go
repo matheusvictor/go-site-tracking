@@ -33,7 +33,6 @@ func main() {
 				fmt.Println("Arquivo criado com sucesso!")
 			}
 
-			registrarSite("loerm")
 		case 3: // Exibir logs
 			var arquivoLogs *os.File = nil
 			arquivoLogs = abrirArquivo("logs")
@@ -45,6 +44,9 @@ func main() {
 			}
 
 			fmt.Println("Exibindo logs...")
+			fmt.Println("================")
+			exibirLogs()
+			fmt.Println("================")
 
 		case 0: // Sair do programa
 			fmt.Println("Saindo do programa")
@@ -182,6 +184,16 @@ func registrarLog(site string, status bool) {
 	}
 
 	arquivoLogs = abrirArquivo(nomeArquivo)
-	arquivoLogs.WriteString("Site: " + site + " [Online: " + strconv.FormatBool(status) + "] \n")
+	arquivoLogs.WriteString("Site: " + site + " [Online: " + strconv.FormatBool(status) + "] [" + time.Now().Format("02/01/2006 15:04:05") + "] \n")
 	arquivoLogs.Close()
+}
+
+func exibirLogs() {
+	arquivoLogs, erro := os.ReadFile("logs.txt")
+
+	if erro != nil {
+		fmt.Println(erro)
+	}
+
+	fmt.Println(string(arquivoLogs))
 }
