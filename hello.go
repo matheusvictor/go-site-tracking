@@ -24,6 +24,7 @@ func main() {
 		case 1: // Iniciar monitoramento
 			iniciarMonitoramento()
 		case 2: // Cadastrar novo site para monitoramento
+			var nomeSite string = ""
 			var arquivoSites *os.File = nil
 
 			arquivoSites = abrirArquivo("sites")
@@ -32,6 +33,10 @@ func main() {
 				criarArquivo("sites")
 				fmt.Println("Arquivo criado com sucesso!")
 			}
+
+			fmt.Print("Nome do site: https://www.")
+			fmt.Scan(&nomeSite)
+			registrarSite(nomeSite)
 
 		case 3: // Exibir logs
 			var arquivoLogs *os.File = nil
@@ -103,9 +108,18 @@ func iniciarMonitoramento() {
 }
 
 func testarSite(site string) {
-	response, erro := http.Get(site)
 
-	if erro != nil {
+	client := &http.Client{
+		Timeout: 5 * time.Second,
+	}
+
+	response, erro := client.Get(site)
+
+	if os.IsTimeout(erro) {
+		fmt.Printf("Ocorreu um erro de timeout: %v\n", erro)
+		registrarLog(site, false)
+		return
+	} else if erro != nil {
 		fmt.Println("Ocorreu um erro:", erro)
 	}
 
@@ -170,7 +184,14 @@ func criarArquivo(nomeArquivo string) {
 
 func registrarSite(site string) {
 	arquivoSites := abrirArquivo("sites")
-	arquivoSites.WriteString(site + "\n")
+
+	if !strings.Contains(site, ".com") {
+		fmt.Println("Não contém .com")
+		arquivoSites.WriteString("https://www." + site + ".com\n")
+	} else {
+		arquivoSites.WriteString("https://www." + site + "\n")
+	}
+
 	arquivoSites.Close()
 }
 
